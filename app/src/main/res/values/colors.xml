@@ -5,5 +5,7 @@
     <color name="colorPrimary">#F40000</color>
     <color name="colorPrimaryDark">#F8333C</color>
     <color name="colorPrimaryLight">#F4998D</color>
-    <color name="colorAccent">#63D2FF</color>
+    <color name="colorAccent">#00b4d8</color>
+    <color name="primaryTextColor">#363a43</color>
+    <color name="secondaryTextColor">#7a8089</color>
 </resources>
