@@ -1,5 +1,6 @@
 package eu.tutorials.ticktock
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +9,9 @@ import android.os.Handler
 import android.view.WindowManager
 import eu.tutorials.ticktock.databinding.ActivitySplashBinding
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
+    // activity variables
     private var binding: ActivitySplashBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
