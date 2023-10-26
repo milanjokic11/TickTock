@@ -1,11 +1,12 @@
-package eu.tutorials.ticktock
+package eu.tutorials.ticktock.activites
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
+import eu.tutorials.ticktock.R
 import eu.tutorials.ticktock.databinding.ActivitySignInBinding
 
-class SignInActivity : AppCompatActivity() {
+class SignInActivity : BaseActivity() {
     // activity variables
     private var binding: ActivitySignInBinding? = null
 

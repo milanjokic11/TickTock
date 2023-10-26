@@ -1,4 +1,4 @@
-package eu.tutorials.ticktock
+package eu.tutorials.ticktock.activites
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import eu.tutorials.ticktock.databinding.ActivityIntroBinding
 
-class IntroActivity : AppCompatActivity() {
+class IntroActivity : BaseActivity() {
     // activity variables
     private var binding: ActivityIntroBinding? = null
 

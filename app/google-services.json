@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1030381528498",
+    "project_id": "ticktock-84f62",
+    "storage_bucket": "ticktock-84f62.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1030381528498:android:4e6949e66b375c1d9f30ab",
+        "android_client_info": {
+          "package_name": "eu.tutorials.ticktock"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIBfZy_I71BNYw7syDPRy2_FtOVXB85go"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1030381528498:android:d70829fd8660919c9f30ab",
+        "android_client_info": {
+          "package_name": "eu.tutorials.ticktock.activites"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIBfZy_I71BNYw7syDPRy2_FtOVXB85go"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

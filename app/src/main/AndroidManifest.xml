@@ -13,22 +13,25 @@
         android:theme="@style/Theme.TickTock"
         tools:targetApi="31">
         <activity
-            android:name=".SignInActivity"
+            android:name=".activites.BaseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activites.SignInActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".activites.SignUpActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".IntroActivity"
+            android:name=".activites.IntroActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".activites.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -39,7 +42,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activites.MainActivity"
             android:exported="false" />
     </application>
 

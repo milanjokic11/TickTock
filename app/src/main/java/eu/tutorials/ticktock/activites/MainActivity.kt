@@ -1,7 +1,9 @@
-package eu.tutorials.ticktock
+
+package eu.tutorials.ticktock.activites
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import eu.tutorials.ticktock.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
