@@ -10,6 +10,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import eu.tutorials.ticktock.R
 import eu.tutorials.ticktock.databinding.ActivitySignUpBinding
+import eu.tutorials.ticktock.models.User
+import eu.tutorials.ticktock.firebase.FireStoreClass
 
 class SignUpActivity : BaseActivity() {
     // activity variables
@@ -41,6 +43,13 @@ class SignUpActivity : BaseActivity() {
         }
     }
 
+    fun userRegisteredSuccess() {
+        Toast.makeText(this@SignUpActivity, "Successfully registered...", Toast.LENGTH_SHORT).show()
+        hideProgressDialog()
+        FirebaseAuth.getInstance().signOut()
+        finish()
+    }
+
     private fun registerUser() {
         val name: String = binding?.etName?.text.toString().trim { it <= ' ' }
         val email: String = binding?.etEmail?.text.toString().trim { it <= ' ' }
@@ -55,8 +64,8 @@ class SignUpActivity : BaseActivity() {
                     val firebaseUser: FirebaseUser = task.result!!.user!!
                     val registeredEmail = firebaseUser.email!!
                     Toast.makeText(this@SignUpActivity, "You have successfully registered the email address" + " $registeredEmail ...", Toast.LENGTH_SHORT).show()
-                    FirebaseAuth.getInstance().signOut()
-                    finish()
+                    val user = User(firebaseUser.uid, name, registeredEmail)
+                    FireStoreClass().registerUser(this, user)
                 } else {
                     Toast.makeText(this@SignUpActivity, "Registration failed...", Toast.LENGTH_SHORT).show()
                 }
