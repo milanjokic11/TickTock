@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import eu.tutorials.ticktock.R
 import eu.tutorials.ticktock.databinding.ActivitySignInBinding
+import eu.tutorials.ticktock.models.User
 
 class SignInActivity : BaseActivity() {
     // activity variables
@@ -46,6 +47,12 @@ class SignInActivity : BaseActivity() {
 
             }
         }
+    }
+
+    fun signInSuccess(user: User) {
+        hideProgressDialog()
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     private fun validateForm(email: String, password: String): Boolean {

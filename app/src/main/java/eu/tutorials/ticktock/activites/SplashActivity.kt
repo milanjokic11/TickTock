@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.WindowManager
 import eu.tutorials.ticktock.databinding.ActivitySplashBinding
+import eu.tutorials.ticktock.firebase.FireStoreClass
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
@@ -27,7 +28,12 @@ class SplashActivity : AppCompatActivity() {
         binding?.tvAppName?.typeface = typeFace
 
         Handler().postDelayed({
-            startActivity(Intent(this, IntroActivity::class.java))
+            var currentUserID = FireStoreClass().getCurrentUserID()
+            if(currentUserID.isNotEmpty()) {
+                startActivity(Intent(this, MainActivity::class.java))
+            } else {
+                startActivity(Intent(this, IntroActivity::class.java))
+            }
             finish()
         }, 2500)
     }
