@@ -1,9 +1,11 @@
 package eu.tutorials.ticktock.firebase
 
+import android.app.Activity
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import eu.tutorials.ticktock.activites.MainActivity
 import eu.tutorials.ticktock.activites.SignInActivity
 import eu.tutorials.ticktock.activites.SignUpActivity
 import eu.tutorials.ticktock.models.User
@@ -33,16 +35,34 @@ class FireStoreClass {
         return currentUserID
     }
 
-    fun signInUser(activity: SignInActivity) {
+    fun signInUser(activity: Activity) {
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserID())
             .get()
             .addOnSuccessListener { doc ->
                 val loggedInUser = doc.toObject(User::class.java)
-                if (loggedInUser != null) {
-                    activity.signInSuccess(loggedInUser)
+                when (activity) {
+                    is SignInActivity -> {
+                        if (loggedInUser != null) {
+                            activity.signInSuccess(loggedInUser)
+                        }
+                    }
+                    is MainActivity -> {
+                        if (loggedInUser != null) {
+                            activity.updateNavigationUserDetails(loggedInUser)
+                        }
+                    }
                 }
             }.addOnFailureListener { e ->
+                when (activity) {
+                    is SignInActivity -> {
+                        activity.hideProgressDialog()
+                    }
+
+                    is MainActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
                 Log.e("SignInUser", "Error writing document", e)
             }
     }
