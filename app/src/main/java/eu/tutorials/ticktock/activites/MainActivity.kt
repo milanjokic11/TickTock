@@ -1,9 +1,12 @@
 
 package eu.tutorials.ticktock.activites
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
@@ -47,6 +50,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (findViewById<DrawerLayout>(R.id.drawer_layout).isDrawerOpen(GravityCompat.START)) {
             findViewById<DrawerLayout>(R.id.drawer_layout).closeDrawer(GravityCompat.START)
@@ -62,7 +66,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.nav_my_profile -> {
                 Toast.makeText(baseContext, "My Profile...", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, ProfileActivity::class.java)
-                startActivity(intent)
+                startActivityForResult(intent, PROFILE_REQUEST_CODE)
             }
             R.id.nav_sign_out -> {
                 FirebaseAuth.getInstance().signOut()
@@ -77,12 +81,30 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     fun updateNavigationUserDetails(user: User) {
+        val headerView = findViewById<NavigationView>(R.id.nav_view).getHeaderView(0)
+
         Glide
             .with(this)
             .load(user.image)
             .centerCrop()
             .placeholder(R.drawable.ic_user_place_holder)
-            .into(findViewById(R.id.cv_nav_user_image))
-        findViewById<TextView>(R.id.tv_username).text = user.name
+            .into(headerView.findViewById<ImageView>(R.id.iv_profile_user_image))
+
+        val navUsername = headerView.findViewById<TextView>(R.id.tv_username)
+        navUsername.text = user.name
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == PROFILE_REQUEST_CODE) {
+            FireStoreClass().loadUserData(this@MainActivity)
+        } else {
+            Log.e("Main.onActivityResult()", "Cancelled...")
+        }
+    }
+
+    companion object {
+        const val PROFILE_REQUEST_CODE: Int = 11
     }
 }
