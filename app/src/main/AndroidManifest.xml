@@ -13,6 +13,11 @@
         android:theme="@style/Theme.TickTock"
         tools:targetApi="31">
         <activity
+            android:name=".activites.ProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
             android:name=".activites.BaseActivity"
             android:exported="false" />
         <activity
@@ -45,7 +50,7 @@
             android:name=".activites.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

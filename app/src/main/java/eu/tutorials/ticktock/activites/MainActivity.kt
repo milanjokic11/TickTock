@@ -2,7 +2,6 @@
 package eu.tutorials.ticktock.activites
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.TextView
@@ -28,7 +27,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setUpActionBar()
         findViewById<NavigationView>(R.id.nav_view).setNavigationItemSelectedListener(this)
 
-        FireStoreClass().signInUser(this)
+        FireStoreClass().loadUserData(this)
     }
 
     private fun setUpActionBar() {
@@ -62,7 +61,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         when (item.itemId) {
             R.id.nav_my_profile -> {
                 Toast.makeText(baseContext, "My Profile...", Toast.LENGTH_SHORT).show()
-                // val intent = Intent(this, ProfileActivity::class.java)
+                val intent = Intent(this, ProfileActivity::class.java)
+                startActivity(intent)
             }
             R.id.nav_sign_out -> {
                 FirebaseAuth.getInstance().signOut()

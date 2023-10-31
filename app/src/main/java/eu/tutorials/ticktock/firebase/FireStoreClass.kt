@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import eu.tutorials.ticktock.activites.MainActivity
+import eu.tutorials.ticktock.activites.ProfileActivity
 import eu.tutorials.ticktock.activites.SignInActivity
 import eu.tutorials.ticktock.activites.SignUpActivity
 import eu.tutorials.ticktock.models.User
@@ -35,7 +36,7 @@ class FireStoreClass {
         return currentUserID
     }
 
-    fun signInUser(activity: Activity) {
+    fun loadUserData(activity: Activity) {
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserID())
             .get()
@@ -52,18 +53,25 @@ class FireStoreClass {
                             activity.updateNavigationUserDetails(loggedInUser)
                         }
                     }
+                    is ProfileActivity -> {
+                        if (loggedInUser != null) {
+                            activity.setUserDataInUI(loggedInUser)
+                        }
+                    }
                 }
             }.addOnFailureListener { e ->
                 when (activity) {
                     is SignInActivity -> {
                         activity.hideProgressDialog()
                     }
-
                     is MainActivity -> {
                         activity.hideProgressDialog()
                     }
+                    is ProfileActivity -> {
+                        activity.hideProgressDialog()
+                    }
                 }
-                Log.e("SignInUser", "Error writing document", e)
+                Log.e("loadUserData", "Error writing document", e)
             }
     }
 }
