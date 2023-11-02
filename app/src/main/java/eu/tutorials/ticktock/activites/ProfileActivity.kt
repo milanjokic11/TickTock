@@ -39,9 +39,9 @@ class ProfileActivity : BaseActivity() {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 showImageChooser()
             } else {
-                ActivityCompat.requestPermissions(this
-                    , arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    , READ_STORAGE_PERMISSION_CODE)
+                ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    READ_STORAGE_PERMISSION_CODE)
             }
         }
         binding?.btnUpdate?.setOnClickListener {
@@ -73,6 +73,27 @@ class ProfileActivity : BaseActivity() {
         startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST_CODE)
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == PICK_IMAGE_REQUEST_CODE && data!!.data != null) {
+            mSelectedFileURI = data.data
+            // set new image
+            try {
+                Glide
+                    .with(this@ProfileActivity)
+                    .load(mSelectedFileURI)
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_user_place_holder)
+                    .into(findViewById(R.id.iv_profile_user_image))
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        } else {
+            Toast.makeText(this@ProfileActivity, "Oops, something went wrong inside ProfileActivity.onActivityResult() ...", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun setUpActionBar() {
         setSupportActionBar(binding?.toolbarProfileActivity)
         val actionBar = supportActionBar
@@ -89,7 +110,7 @@ class ProfileActivity : BaseActivity() {
     fun setUserDataInUI(user: User) {
         mUserDetails = user
         Glide
-            .with(this)
+            .with(this@ProfileActivity)
             .load(user.image)
             .centerCrop()
             .placeholder(R.drawable.ic_user_place_holder)
@@ -107,18 +128,17 @@ class ProfileActivity : BaseActivity() {
         if (mSelectedFileURI != null) {
             val sRef: StorageReference = FirebaseStorage.getInstance()
                 .reference.child("USER_IMAGE" + System.currentTimeMillis() + "." + getFileExtension(mSelectedFileURI))
-            sRef.putFile(mSelectedFileURI!!).addOnSuccessListener {
-                taskSnapshot ->
+            sRef.putFile(mSelectedFileURI!!).addOnSuccessListener { taskSnapshot ->
                     Log.i("Firebase Image URL", taskSnapshot.metadata!!.reference!!.downloadUrl.toString())
-                taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener {
-                    uri ->
-                        Log.i("Downloadable Image URL", uri.toString())
-                        mProfileURL = uri.toString()
-                }
-            }.addOnFailureListener {
-                exception ->
-                    Toast.makeText(this@ProfileActivity,  exception.message, Toast.LENGTH_SHORT).show()
+                taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
+                    Log.i("Downloadable Image URL", uri.toString())
+                    mProfileURL = uri.toString()
+                    // update profile data
                     hideProgressDialog()
+                }
+            }.addOnFailureListener { exception ->
+                Toast.makeText(this@ProfileActivity,  exception.message, Toast.LENGTH_SHORT).show()
+                hideProgressDialog()
             }
         }
     }
