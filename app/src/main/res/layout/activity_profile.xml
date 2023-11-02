@@ -57,7 +57,7 @@
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_name"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:hint="@string/name"
                         android:textSize="@dimen/et_text_size" />
 
@@ -71,7 +71,7 @@
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_email"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:hint="@string/email"
@@ -88,7 +88,7 @@
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_mobile"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:hint="@string/mobile"
                         android:inputType="phone"
                         android:textSize="@dimen/et_text_size" />

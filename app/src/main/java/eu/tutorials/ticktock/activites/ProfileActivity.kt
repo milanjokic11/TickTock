@@ -49,7 +49,6 @@ class ProfileActivity : BaseActivity() {
                 uploadUserImage()
             } else {
                 showProgressDialog(resources.getString(R.string.please_wait))
-                updateUserProfileData()
             }
         }
     }
@@ -74,24 +73,6 @@ class ProfileActivity : BaseActivity() {
         startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST_CODE)
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == PICK_IMAGE_REQUEST_CODE && data!!.data != null) {
-            mSelectedFileURI = data.data
-            try {
-                Glide
-                    .with(this)
-                    .load(Uri.parse(mSelectedFileURI.toString()))
-                    .centerCrop()
-                    .placeholder(R.drawable.ic_user_place_holder)
-                    .into(findViewById(R.id.iv_profile_user_image))
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
     private fun setUpActionBar() {
         setSupportActionBar(binding?.toolbarProfileActivity)
         val actionBar = supportActionBar
@@ -102,26 +83,6 @@ class ProfileActivity : BaseActivity() {
             binding?.toolbarProfileActivity?.setNavigationOnClickListener {
                 onBackPressed()
             }
-        }
-    }
-
-    private fun updateUserProfileData() {
-        val userHashMap = HashMap<String, Any>()
-         var changesMade: Boolean = false
-        if (mProfileURL.isNotEmpty() && mProfileURL != mUserDetails.image) {
-            userHashMap[Constants.IMAGE] = mProfileURL
-            changesMade = true
-        }
-        if (binding?.etName?.text.toString() != mUserDetails.name) {
-            userHashMap[Constants.NAME] = binding?.etName?.text.toString()
-            changesMade = true
-        }
-        if (binding?.etMobile?.text.toString().toLong() != mUserDetails.mobile) {
-            userHashMap[Constants.MOBILE] = binding?.etMobile?.text.toString().toLong()
-            changesMade = true
-        }
-        if (changesMade) {
-            FireStoreClass().updateUserProfileData(this@ProfileActivity, userHashMap)
         }
     }
 
@@ -153,7 +114,6 @@ class ProfileActivity : BaseActivity() {
                     uri ->
                         Log.i("Downloadable Image URL", uri.toString())
                         mProfileURL = uri.toString()
-                        updateUserProfileData()
                 }
             }.addOnFailureListener {
                 exception ->
@@ -165,12 +125,6 @@ class ProfileActivity : BaseActivity() {
 
     private fun getFileExtension(uri: Uri?): String? {
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri!!))
-    }
-
-    fun profileUpdateSuccess() {
-        hideProgressDialog()
-        setResult(Activity.RESULT_OK)
-        finish()
     }
 
     companion object {

@@ -15,6 +15,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import de.hdodenhof.circleimageview.CircleImageView
 import eu.tutorials.ticktock.R
 import eu.tutorials.ticktock.databinding.ActivityMainBinding
 import eu.tutorials.ticktock.firebase.FireStoreClass
@@ -88,7 +89,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             .load(user.image)
             .centerCrop()
             .placeholder(R.drawable.ic_user_place_holder)
-            .into(headerView.findViewById<ImageView>(R.id.iv_profile_user_image))
+            .into(findViewById<CircleImageView>(R.id.cv_nav_user_image))
 
         val navUsername = headerView.findViewById<TextView>(R.id.tv_username)
         navUsername.text = user.name
