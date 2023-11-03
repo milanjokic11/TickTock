@@ -6,18 +6,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import de.hdodenhof.circleimageview.CircleImageView
 import eu.tutorials.ticktock.R
+import eu.tutorials.ticktock.adapters.BoardItemsAdapter
 import eu.tutorials.ticktock.databinding.ActivityMainBinding
 import eu.tutorials.ticktock.firebase.FireStoreClass
+import eu.tutorials.ticktock.models.Board
 import eu.tutorials.ticktock.models.User
 import eu.tutorials.ticktock.utils.Constants
 
@@ -39,7 +44,26 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             startActivity(intent)
         }
 
-        FireStoreClass().loadUserData(this)
+        FireStoreClass().loadUserData(this, true)
+    }
+
+    fun setBoardsListToUI(boardsList: ArrayList<Board>) {
+        hideProgressDialog()
+        val rvBoardsList = findViewById<RecyclerView>(R.id.rv_boards_list)
+        val tvNoBoards = findViewById<TextView>(R.id.tv_no_boards_available)
+        if (boardsList.size > 0) {
+            rvBoardsList.visibility = View.VISIBLE
+            tvNoBoards.visibility = View.GONE
+
+            rvBoardsList.layoutManager = LinearLayoutManager(this)
+            rvBoardsList.setHasFixedSize(true)
+
+            val adapter = BoardItemsAdapter(this, boardsList)
+            rvBoardsList.adapter = adapter
+        } else {
+            rvBoardsList.visibility = View.GONE
+            tvNoBoards.visibility = View.VISIBLE
+        }
     }
 
     private fun setUpActionBar() {
@@ -88,7 +112,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return true
     }
 
-    fun updateNavigationUserDetails(user: User) {
+    fun updateNavigationUserDetails(user: User, readBoardsList: Boolean) {
         // set global user name
         mUserName = user.name
         val headerView = findViewById<NavigationView>(R.id.nav_view).getHeaderView(0)
@@ -101,6 +125,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val navUsername = headerView.findViewById<TextView>(R.id.tv_username)
         navUsername.text = user.name
+
+        if (readBoardsList) {
+            showProgressDialog(resources.getString(R.string.please_wait))
+            FireStoreClass().getBoardsList(this)
+        }
     }
 
     @Deprecated("Deprecated in Java")

@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.toObject
 import eu.tutorials.ticktock.activities.CreateBoardActivity
 import eu.tutorials.ticktock.activities.MainActivity
 import eu.tutorials.ticktock.activities.ProfileActivity
@@ -27,6 +28,29 @@ class FireStoreClass {
                 activity.userRegisteredSuccess()
             }.addOnFailureListener { e ->
                 Log.e(activity.javaClass.simpleName, "Error writing document", e)
+            }
+    }
+
+    fun getBoardsList(activity: MainActivity) {
+        mFireStore.collection(Constants.BOARDS)
+            .whereArrayContains(Constants.ASSIGNED_TO, getCurrentUserID())
+            .get()
+            .addOnSuccessListener { doc ->
+                Log.i(activity.javaClass.simpleName, doc.documents.toString())
+                val boardsList: ArrayList<Board> = ArrayList()
+                for (i in doc.documents) {
+                    val board = i.toObject(Board::class.java)
+                    board?.docID = i.id
+                    if (board != null) {
+                        boardsList.add(board)
+                    }
+                }
+                activity.setBoardsListToUI(boardsList)
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while creating boards list...", e)
+
             }
     }
 
@@ -66,7 +90,7 @@ class FireStoreClass {
             }
     }
 
-    fun loadUserData(activity: Activity) {
+    fun loadUserData(activity: Activity, readBoardsList: Boolean = false) {
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserID())
             .get()
@@ -80,7 +104,7 @@ class FireStoreClass {
                     }
                     is MainActivity -> {
                         if (loggedInUser != null) {
-                            activity.updateNavigationUserDetails(loggedInUser)
+                            activity.updateNavigationUserDetails(loggedInUser, readBoardsList)
                         }
                     }
                     is ProfileActivity -> {
