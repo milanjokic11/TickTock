@@ -9,12 +9,12 @@ import eu.tutorials.ticktock.activities.CreateBoardActivity
 
 object Constants {
     const val USERS: String = "Users"
+    const val BOARDS: String = "Boards"
     const val NAME: String = "name"
     const val IMAGE: String = "image"
     const val MOBILE: String = "mobile"
     const val READ_STORAGE_PERMISSION_CODE: Int = 1
     const val PICK_IMAGE_REQUEST_CODE: Int = 2
-
 
     fun showImageChooser(activity: Activity) {
         var galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)

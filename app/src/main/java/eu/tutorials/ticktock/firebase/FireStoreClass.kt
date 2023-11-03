@@ -6,10 +6,12 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import eu.tutorials.ticktock.activities.CreateBoardActivity
 import eu.tutorials.ticktock.activities.MainActivity
 import eu.tutorials.ticktock.activities.ProfileActivity
 import eu.tutorials.ticktock.activities.SignInActivity
 import eu.tutorials.ticktock.activities.SignUpActivity
+import eu.tutorials.ticktock.models.Board
 import eu.tutorials.ticktock.models.User
 import eu.tutorials.ticktock.utils.Constants
 
@@ -25,6 +27,18 @@ class FireStoreClass {
                 activity.userRegisteredSuccess()
             }.addOnFailureListener { e ->
                 Log.e(activity.javaClass.simpleName, "Error writing document", e)
+            }
+    }
+
+    fun createBoard(activity: CreateBoardActivity, board: Board) {
+        mFireStore.collection(Constants.BOARDS)
+            .document()
+            .set(board, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.e(activity.javaClass.simpleName, "Board created successfully")
+                activity.boardCreated()
+            }.addOnFailureListener { e ->
+                Log.e(activity.javaClass.simpleName, "Error creating board", e)
             }
     }
 

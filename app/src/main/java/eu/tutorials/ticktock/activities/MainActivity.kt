@@ -19,10 +19,13 @@ import eu.tutorials.ticktock.R
 import eu.tutorials.ticktock.databinding.ActivityMainBinding
 import eu.tutorials.ticktock.firebase.FireStoreClass
 import eu.tutorials.ticktock.models.User
+import eu.tutorials.ticktock.utils.Constants
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
     // class variables
     private var binding: ActivityMainBinding? = null
+    private lateinit var mUserName: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -31,7 +34,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         findViewById<NavigationView>(R.id.nav_view).setNavigationItemSelectedListener(this)
         // set create board functionality
         findViewById<FloatingActionButton>(R.id.fab_create_board).setOnClickListener{
-            startActivity(Intent(this, CreateBoardActivity::class.java))
+            val intent = Intent(this, CreateBoardActivity::class.java)
+            intent.putExtra(Constants.NAME, mUserName)
+            startActivity(intent)
         }
 
         FireStoreClass().loadUserData(this)
@@ -84,8 +89,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     fun updateNavigationUserDetails(user: User) {
+        // set global user name
+        mUserName = user.name
         val headerView = findViewById<NavigationView>(R.id.nav_view).getHeaderView(0)
-
         Glide
             .with(this)
             .load(user.image)
