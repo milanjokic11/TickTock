@@ -41,7 +41,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         findViewById<FloatingActionButton>(R.id.fab_create_board).setOnClickListener{
             val intent = Intent(this, CreateBoardActivity::class.java)
             intent.putExtra(Constants.NAME, mUserName)
-            startActivity(intent)
+            startActivityForResult(intent, CREATE_BOARD_REQUEST_CODE)
         }
 
         FireStoreClass().loadUserData(this, true)
@@ -137,6 +137,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == PROFILE_REQUEST_CODE) {
             FireStoreClass().loadUserData(this@MainActivity)
+        } else if (resultCode == Activity.RESULT_OK && requestCode == CREATE_BOARD_REQUEST_CODE) {
+            FireStoreClass().getBoardsList(this)
         } else {
             Log.e("Main.onActivityResult()", "Cancelled...")
         }
@@ -144,5 +146,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     companion object {
         const val PROFILE_REQUEST_CODE: Int = 11
+        const val CREATE_BOARD_REQUEST_CODE: Int = 12
     }
 }
