@@ -12,6 +12,7 @@ import eu.tutorials.ticktock.activities.MainActivity
 import eu.tutorials.ticktock.activities.ProfileActivity
 import eu.tutorials.ticktock.activities.SignInActivity
 import eu.tutorials.ticktock.activities.SignUpActivity
+import eu.tutorials.ticktock.activities.TaskListActivity
 import eu.tutorials.ticktock.models.Board
 import eu.tutorials.ticktock.models.User
 import eu.tutorials.ticktock.utils.Constants
@@ -53,6 +54,22 @@ class FireStoreClass {
 
             }
     }
+
+    fun getBoardDetails(activity: TaskListActivity, docID: String) {
+        mFireStore.collection(Constants.BOARDS)
+            .document(docID)
+            .get()
+            .addOnSuccessListener { doc ->
+                Log.i(activity.javaClass.simpleName, doc.toString())
+                activity.boardDetails(doc.toObject<Board>(Board::class.java)!!)
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while creating boards list...", e)
+
+            }
+    }
+
 
     fun createBoard(activity: CreateBoardActivity, board: Board) {
         mFireStore.collection(Constants.BOARDS)

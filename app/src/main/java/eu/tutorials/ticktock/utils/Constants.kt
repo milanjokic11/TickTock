@@ -16,6 +16,7 @@ object Constants {
     const val ASSIGNED_TO: String = "assignedTo"
     const val READ_STORAGE_PERMISSION_CODE: Int = 1
     const val PICK_IMAGE_REQUEST_CODE: Int = 2
+    const val DOC_ID: String = "docID"
 
     fun showImageChooser(activity: Activity) {
         var galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)

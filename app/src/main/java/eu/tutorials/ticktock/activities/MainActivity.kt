@@ -64,6 +64,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             adapter.setOnClickListener(object: BoardItemsAdapter.OnClickListener{
                 override fun onClick(pos: Int, model: Board) {
                     val intent = Intent(this@MainActivity, TaskListActivity::class.java)
+                    intent.putExtra(Constants.DOC_ID, model.docID)
                     startActivity(intent)
                 }
             })
