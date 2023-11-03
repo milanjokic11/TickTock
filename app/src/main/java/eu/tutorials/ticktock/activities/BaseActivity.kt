@@ -1,4 +1,4 @@
-package eu.tutorials.ticktock.activites
+package eu.tutorials.ticktock.activities
 
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity

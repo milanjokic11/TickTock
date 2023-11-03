@@ -1,7 +1,6 @@
 
-package eu.tutorials.ticktock.activites
+package eu.tutorials.ticktock.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.WindowManager

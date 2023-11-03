@@ -1,5 +1,5 @@
 
-package eu.tutorials.ticktock.activites
+package eu.tutorials.ticktock.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent

@@ -1,18 +1,17 @@
 
-package eu.tutorials.ticktock.activites
+package eu.tutorials.ticktock.activities
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.bumptech.glide.Glide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import de.hdodenhof.circleimageview.CircleImageView
@@ -30,6 +29,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         setContentView(binding?.root)
         setUpActionBar()
         findViewById<NavigationView>(R.id.nav_view).setNavigationItemSelectedListener(this)
+        // set create board functionality
+        findViewById<FloatingActionButton>(R.id.fab_create_board).setOnClickListener{
+            startActivity(Intent(this, CreateBoardActivity::class.java))
+        }
 
         FireStoreClass().loadUserData(this)
     }
@@ -65,7 +68,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_my_profile -> {
-                Toast.makeText(baseContext, "My Profile...", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, ProfileActivity::class.java)
                 startActivityForResult(intent, PROFILE_REQUEST_CODE)
             }

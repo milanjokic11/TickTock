@@ -2,13 +2,14 @@ package eu.tutorials.ticktock.firebase
 
 import android.app.Activity
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import eu.tutorials.ticktock.activites.MainActivity
-import eu.tutorials.ticktock.activites.ProfileActivity
-import eu.tutorials.ticktock.activites.SignInActivity
-import eu.tutorials.ticktock.activites.SignUpActivity
+import eu.tutorials.ticktock.activities.MainActivity
+import eu.tutorials.ticktock.activities.ProfileActivity
+import eu.tutorials.ticktock.activities.SignInActivity
+import eu.tutorials.ticktock.activities.SignUpActivity
 import eu.tutorials.ticktock.models.User
 import eu.tutorials.ticktock.utils.Constants
 
@@ -34,6 +35,21 @@ class FireStoreClass {
             currentUserID = currentUser.uid
         }
         return currentUserID
+    }
+
+    fun updateUserProfileData(activity: ProfileActivity, userHashMap: HashMap<String, Any>) {
+        mFireStore.collection(Constants.USERS)
+            .document(getCurrentUserID())
+            .update(userHashMap)
+            .addOnSuccessListener {
+                Log.i(activity.javaClass.simpleName, "Profile Data updated...")
+                Toast.makeText(activity, "Profile updated successfully...", Toast.LENGTH_SHORT).show()
+                activity.profileUpdateSuccess()
+            }.addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error when updating profile data...")
+                Toast.makeText(activity, "Error when updating profile data...", Toast.LENGTH_SHORT).show()
+            }
     }
 
     fun loadUserData(activity: Activity) {

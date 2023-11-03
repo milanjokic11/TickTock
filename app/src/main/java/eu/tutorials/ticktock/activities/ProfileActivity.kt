@@ -1,4 +1,4 @@
-package eu.tutorials.ticktock.activites
+package eu.tutorials.ticktock.activities
 
 import android.Manifest
 import android.app.Activity
@@ -49,6 +49,7 @@ class ProfileActivity : BaseActivity() {
                 uploadUserImage()
             } else {
                 showProgressDialog(resources.getString(R.string.please_wait))
+                updateUserProfileData()
             }
         }
     }
@@ -123,6 +124,22 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
+    private fun updateUserProfileData() {
+        val userHashMap = HashMap<String, Any>()
+        var changesMade: Boolean = false
+        if (mProfileURL.isNotEmpty() && mProfileURL != mUserDetails.image) {
+            userHashMap[Constants.IMAGE] = mProfileURL
+        }
+        if (binding?.etName?.text.toString() != mUserDetails.name) {
+            userHashMap[Constants.NAME] = binding?.etName?.text.toString()
+        }
+        if (binding?.etMobile?.text.toString().toLong() != mUserDetails.mobile) {
+            userHashMap[Constants.MOBILE] = binding?.etMobile?.text.toString().toLong()
+        }
+        // update user values in fire store database
+        FireStoreClass().updateUserProfileData(this, userHashMap)
+    }
+
     private fun uploadUserImage() {
         showProgressDialog(resources.getString(R.string.please_wait))
         if (mSelectedFileURI != null) {
@@ -134,7 +151,7 @@ class ProfileActivity : BaseActivity() {
                     Log.i("Downloadable Image URL", uri.toString())
                     mProfileURL = uri.toString()
                     // update profile data
-                    hideProgressDialog()
+                    updateUserProfileData()
                 }
             }.addOnFailureListener { exception ->
                 Toast.makeText(this@ProfileActivity,  exception.message, Toast.LENGTH_SHORT).show()
@@ -145,6 +162,12 @@ class ProfileActivity : BaseActivity() {
 
     private fun getFileExtension(uri: Uri?): String? {
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(uri!!))
+    }
+
+    fun profileUpdateSuccess() {
+        hideProgressDialog()
+        setResult(Activity.RESULT_OK)
+        finish()
     }
 
     companion object {
