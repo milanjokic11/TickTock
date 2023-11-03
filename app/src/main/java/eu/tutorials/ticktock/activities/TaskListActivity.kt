@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import eu.tutorials.ticktock.R
+import eu.tutorials.ticktock.adapters.TaskListItemsAdapter
 import eu.tutorials.ticktock.databinding.ActivityTaskListBinding
 import eu.tutorials.ticktock.firebase.FireStoreClass
 import eu.tutorials.ticktock.models.Board
+import eu.tutorials.ticktock.models.Task
 import eu.tutorials.ticktock.utils.Constants
 
 class TaskListActivity : BaseActivity() {
@@ -30,6 +33,15 @@ class TaskListActivity : BaseActivity() {
     fun boardDetails(board: Board) {
         hideProgressDialog()
         setUpActionBar(board.name)
+
+        val addTaskList = Task(resources.getString(R.string.add_list))
+        board.taskList.add(addTaskList)
+
+        binding?.rvTaskList?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding?.rvTaskList?.setHasFixedSize(true)
+
+        val adapter = TaskListItemsAdapter(this, board.taskList)
+        binding?.rvTaskList?.adapter = adapter
     }
 
     private fun setUpActionBar(title: String) {
@@ -45,14 +57,4 @@ class TaskListActivity : BaseActivity() {
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (findViewById<DrawerLayout>(R.id.drawer_layout).isDrawerOpen(GravityCompat.START)) {
-            findViewById<DrawerLayout>(R.id.drawer_layout).closeDrawer(GravityCompat.START)
-            super.onBackPressed()
-        } else {
-            doubleBackToExit()
-            super.onBackPressed()
-        }
-    }
 }
