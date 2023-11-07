@@ -1,7 +1,7 @@
 package eu.tutorials.ticktock.activities
 
+import android.app.Activity
 import android.app.Dialog
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -22,6 +22,8 @@ class MembersActivity : BaseActivity() {
     private lateinit var mBoardDetails: Board
     private lateinit var mAssignedMembersList: ArrayList<User>
     private var binding: ActivityMembersBinding? = null
+    private var changedMade: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMembersBinding.inflate(layoutInflater)
@@ -78,9 +80,19 @@ class MembersActivity : BaseActivity() {
         dialog.show()
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (changedMade) {
+            setResult(Activity.RESULT_OK)
+        }
+
+        super.onBackPressed()
+    }
+
     fun memberAssignedSuccess(user: User) {
         hideProgressDialog()
         mAssignedMembersList.add(user)
+        changedMade = true
         setUpMembersList(mAssignedMembersList)
     }
 
