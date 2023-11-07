@@ -61,7 +61,9 @@ class FireStoreClass {
             .get()
             .addOnSuccessListener { doc ->
                 Log.i(activity.javaClass.simpleName, doc.toString())
-                activity.boardDetails(doc.toObject<Board>(Board::class.java)!!)
+                val board = doc.toObject(Board::class.java)!!
+                board.docID = doc.id
+                activity.boardDetails(board)
             }
             .addOnFailureListener { e ->
                 activity.hideProgressDialog()
@@ -90,6 +92,23 @@ class FireStoreClass {
             currentUserID = currentUser.uid
         }
         return currentUserID
+    }
+
+    fun addUpdateTaskList(activity: TaskListActivity, board: Board) {
+        val taskListHashMap = HashMap<String, Any>()
+        taskListHashMap[Constants.TASK_LIST] = board.taskList
+
+        mFireStore.collection(Constants.BOARDS)
+            .document(board.docID)
+            .update(taskListHashMap)
+            .addOnSuccessListener{
+                Log.e(activity.javaClass.simpleName, "TaskList updated successfully...")
+                activity.addUpdateTaskListSuccess()
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error occurred while creating a board...", e)
+            }
     }
 
     fun updateUserProfileData(activity: ProfileActivity, userHashMap: HashMap<String, Any>) {

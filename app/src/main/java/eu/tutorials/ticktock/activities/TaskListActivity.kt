@@ -16,6 +16,7 @@ import eu.tutorials.ticktock.utils.Constants
 class TaskListActivity : BaseActivity() {
     // class vars
     private var binding: ActivityTaskListBinding? = null
+    private lateinit var mBoardDetails: Board
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +32,9 @@ class TaskListActivity : BaseActivity() {
     }
 
     fun boardDetails(board: Board) {
+        mBoardDetails = board
         hideProgressDialog()
-        setUpActionBar(board.name)
+        setUpActionBar()
 
         val addTaskList = Task(resources.getString(R.string.add_list))
         board.taskList.add(addTaskList)
@@ -44,17 +46,31 @@ class TaskListActivity : BaseActivity() {
         binding?.rvTaskList?.adapter = adapter
     }
 
-    private fun setUpActionBar(title: String) {
+    private fun setUpActionBar() {
         setSupportActionBar(binding?.toolbarTaskListActivity)
         val actionBar = supportActionBar
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true)
             actionBar.setHomeAsUpIndicator(R.drawable.ic_white_back_btn_24dp)
-            actionBar.title = title
+            actionBar.title = mBoardDetails.name
             binding?.toolbarTaskListActivity?.setNavigationOnClickListener {
                 onBackPressed()
             }
         }
+    }
+
+    fun addUpdateTaskListSuccess() {
+        hideProgressDialog()
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FireStoreClass().getBoardDetails(this, mBoardDetails.docID)
+    }
+
+    fun createTaskList(taskListName: String) {
+        val task = Task(taskListName, FireStoreClass().getCurrentUserID())
+        mBoardDetails.taskList.add(0, task)
+        mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
+        showProgressDialog(resources.getString(R.string.please_wait))
+        FireStoreClass().addUpdateTaskList(this, mBoardDetails)
     }
 
 }
