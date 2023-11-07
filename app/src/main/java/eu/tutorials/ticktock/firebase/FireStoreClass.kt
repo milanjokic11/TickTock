@@ -141,7 +141,7 @@ class FireStoreClass {
                 activity.profileUpdateSuccess()
             }.addOnFailureListener { e ->
                 activity.hideProgressDialog()
-                Log.e(activity.javaClass.simpleName, "Error when updating profile data...")
+                Log.e(activity.javaClass.simpleName, "Error when updating profile data...", e)
                 Toast.makeText(activity, "Error when updating profile data...", Toast.LENGTH_SHORT).show()
             }
     }
@@ -182,6 +182,41 @@ class FireStoreClass {
                     }
                 }
                 Log.e("loadUserData", "Error writing document", e)
+            }
+    }
+
+    fun getMemberDetails(activity: MembersActivity, email: String) {
+        mFireStore.collection(Constants.USERS)
+            .whereEqualTo(Constants.EMAIL, email)
+            .get()
+            .addOnSuccessListener { doc ->
+                if (doc.documents.size > 0) {
+                    val user = doc.documents[0].toObject(User::class.java)!!
+                    activity.memberDetails(user)
+                } else {
+                    activity.hideProgressDialog()
+                    activity.showErrorSnackBar("No member found under that email address...")
+                }
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while getting user details...", e)
+            }
+    }
+
+    fun assignMemberToBoard(activity: MembersActivity, board: Board, user: User) {
+        val assignedToHashMap = HashMap<String, Any>()
+        assignedToHashMap[Constants.ASSIGNED_TO] = board.assignedTo
+
+        mFireStore.collection(Constants.BOARDS)
+            .document(board.docID)
+            .update(assignedToHashMap)
+            .addOnSuccessListener {
+                activity.memberAssignedSuccess(user)
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while creating board...", e)
             }
     }
 }
