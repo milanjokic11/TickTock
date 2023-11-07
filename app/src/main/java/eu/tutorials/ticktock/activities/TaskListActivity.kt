@@ -10,6 +10,7 @@ import eu.tutorials.ticktock.adapters.TaskListItemsAdapter
 import eu.tutorials.ticktock.databinding.ActivityTaskListBinding
 import eu.tutorials.ticktock.firebase.FireStoreClass
 import eu.tutorials.ticktock.models.Board
+import eu.tutorials.ticktock.models.Card
 import eu.tutorials.ticktock.models.Task
 import eu.tutorials.ticktock.utils.Constants
 
@@ -85,6 +86,26 @@ class TaskListActivity : BaseActivity() {
         mBoardDetails.taskList.removeAt(pos)
         mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
         showProgressDialog(resources.getString(R.string.please_wait))
+        FireStoreClass().addUpdateTaskList(this, mBoardDetails)
+    }
+
+    fun addCardToTask(pos: Int, cardName: String) {
+        val currUserID = FireStoreClass().getCurrentUserID()
+        mBoardDetails.taskList.removeAt(mBoardDetails.taskList.size - 1)
+
+        val cardAssignedUsersList: ArrayList<String> = ArrayList()
+        cardAssignedUsersList.add(currUserID)
+
+        val card = Card(cardName, currUserID, cardAssignedUsersList)
+        val cardList = mBoardDetails.taskList[pos].cards
+        cardList.add(card)
+        
+        val task = Task(mBoardDetails.taskList[pos].title, mBoardDetails.taskList[pos].createdBy, cardList)
+
+        mBoardDetails.taskList[pos] = task
+
+        showProgressDialog(resources.getString(R.string.please_wait))
+
         FireStoreClass().addUpdateTaskList(this, mBoardDetails)
     }
 

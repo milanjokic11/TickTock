@@ -1,5 +1,6 @@
 package eu.tutorials.ticktock.adapters
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.res.Resources
@@ -12,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
 import eu.tutorials.ticktock.R
@@ -27,16 +29,17 @@ open class TaskListItemsAdapter(private val context: Context, private var list: 
         layoutParams.setMargins((15.toDp().toPx()), 0, (40.toDp()).toPx(), 0)
         view.layoutParams = layoutParams
 
-        return myViewHolder(view)
+        return MyViewHolder(view)
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
+    @SuppressLint("CutPasteId")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, pos: Int) {
         val model = list[pos]
-        if (holder is myViewHolder) {
+        if (holder is MyViewHolder) {
             if (pos == list.size - 1) {
                 holder.itemView.findViewById<TextView>(R.id.tv_add_task_list).visibility = View.VISIBLE
                 holder.itemView.findViewById<LinearLayout>(R.id.ll_task_item).visibility = View.GONE
@@ -85,6 +88,28 @@ open class TaskListItemsAdapter(private val context: Context, private var list: 
             holder.itemView.findViewById<ImageButton>(R.id.ib_delete_list).setOnClickListener {
                 alertDialogForDeleteList(pos, model.title)
             }
+            holder.itemView.findViewById<TextView>(R.id.tv_add_card).setOnClickListener {
+                holder.itemView.findViewById<TextView>(R.id.tv_add_card).visibility = View.GONE
+                holder.itemView.findViewById<CardView>(R.id.cv_add_card).visibility = View.VISIBLE
+            }
+            holder.itemView.findViewById<ImageButton>(R.id.ib_close_card_name).setOnClickListener{
+                holder.itemView.findViewById<TextView>(R.id.tv_add_card).visibility = View.VISIBLE
+                holder.itemView.findViewById<CardView>(R.id.cv_add_card).visibility = View.GONE
+            }
+            holder.itemView.findViewById<ImageButton>(R.id.ib_done_card_name).setOnClickListener {
+                val cardName = holder.itemView.findViewById<EditText>(R.id.et_card_name).text.toString()
+                if (cardName.isNotEmpty()) {
+                    if (context is TaskListActivity) {
+                        context.addCardToTask(pos, cardName)
+                    }
+                } else {
+                    Toast.makeText(context, "Please enter card name...", Toast.LENGTH_SHORT).show()
+                }
+            }
+            holder.itemView.findViewById<RecyclerView>(R.id.rv_card_list).layoutManager = LinearLayoutManager(context)
+            holder.itemView.findViewById<RecyclerView>(R.id.rv_card_list).setHasFixedSize(true)
+            val adapter = CardListItemsAdapter(context, model.cards)
+            holder.itemView.findViewById<RecyclerView>(R.id.rv_card_list).adapter = adapter
         }
     }
 
@@ -111,5 +136,5 @@ open class TaskListItemsAdapter(private val context: Context, private var list: 
 
     private fun Int.toPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
 
-    class myViewHolder(view: View): RecyclerView.ViewHolder(view)
+    class MyViewHolder(view: View): RecyclerView.ViewHolder(view)
 }
