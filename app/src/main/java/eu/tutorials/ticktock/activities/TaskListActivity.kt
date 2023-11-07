@@ -1,7 +1,10 @@
 package eu.tutorials.ticktock.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +33,22 @@ class TaskListActivity : BaseActivity() {
         }
         showProgressDialog(resources.getString(R.string.please_wait))
         FireStoreClass().getBoardDetails(this, boardDocID)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_members, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_members -> {
+                val intent = Intent(this, MembersActivity::class.java)
+                intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
+                startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun boardDetails(board: Board) {

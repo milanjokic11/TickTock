@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import eu.tutorials.ticktock.R
 import eu.tutorials.ticktock.models.Card
 
-open class CardListItemsAdapter (private val context: Context, private var list: ArrayList<Card>, ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+open class CardListItemsAdapter (private val context: Context, private var list: ArrayList<Card>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     // class vars
     private var onClickListener: OnClickListener? = null
 

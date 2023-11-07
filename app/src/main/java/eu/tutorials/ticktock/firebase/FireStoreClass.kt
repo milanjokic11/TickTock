@@ -9,6 +9,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.toObject
 import eu.tutorials.ticktock.activities.CreateBoardActivity
 import eu.tutorials.ticktock.activities.MainActivity
+import eu.tutorials.ticktock.activities.MembersActivity
 import eu.tutorials.ticktock.activities.ProfileActivity
 import eu.tutorials.ticktock.activities.SignInActivity
 import eu.tutorials.ticktock.activities.SignUpActivity
@@ -92,6 +93,25 @@ class FireStoreClass {
             currentUserID = currentUser.uid
         }
         return currentUserID
+    }
+
+    fun getAssignedMembersListDetails(activity: MembersActivity, assignedTo: ArrayList<String>) {
+        mFireStore.collection(Constants.USERS)
+            .whereIn(Constants.ID, assignedTo)
+            .get()
+            .addOnSuccessListener { doc ->
+                Log.e(activity.javaClass.simpleName, doc.documents.toString())
+                val usersList: ArrayList<User> = ArrayList()
+                for (i in doc.documents) {
+                    val user = i.toObject(User::class.java)!!
+                    usersList.add(user)
+                }
+                activity.setUpMembersList(usersList)
+            }
+            .addOnFailureListener { e ->
+                activity.hideProgressDialog()
+                Log.e(activity.javaClass.simpleName, "Error while creating board", e)
+            }
     }
 
     fun addUpdateTaskList(activity: TaskListActivity, board: Board) {
