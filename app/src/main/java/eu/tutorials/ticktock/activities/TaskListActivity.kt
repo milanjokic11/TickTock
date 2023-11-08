@@ -62,6 +62,14 @@ class TaskListActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    fun cardDetails(taskListPos: Int, cardPos: Int) {
+        val intent = Intent(this, CardDetailsActivity::class.java)
+        intent.putExtra(Constants.BOARD_DETAIL, mBoardDetails)
+        intent.putExtra(Constants.TASK_LIST_ITEM_POS, taskListPos)
+        intent.putExtra(Constants.CARD_LIST_ITEM_POS, cardPos)
+        startActivity(intent)
+    }
+
     fun boardDetails(board: Board) {
         mBoardDetails = board
         hideProgressDialog()
