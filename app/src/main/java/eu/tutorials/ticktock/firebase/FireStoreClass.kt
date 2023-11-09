@@ -144,16 +144,31 @@ class FireStoreClass {
             }
     }
 
-    fun updateUserProfileData(activity: ProfileActivity, userHashMap: HashMap<String, Any>) {
+    fun updateUserProfileData(activity: Activity, userHashMap: HashMap<String, Any>) {
         mFireStore.collection(Constants.USERS)
             .document(getCurrentUserID())
             .update(userHashMap)
             .addOnSuccessListener {
                 Log.i(activity.javaClass.simpleName, "Profile Data updated...")
                 Toast.makeText(activity, "Profile updated successfully...", Toast.LENGTH_SHORT).show()
-                activity.profileUpdateSuccess()
+                when (activity) {
+                    is MainActivity -> {
+                        activity.tokenUpdateSuccess()
+                    }
+                    is ProfileActivity -> {
+                        activity.profileUpdateSuccess()
+                    }
+                }
+
             }.addOnFailureListener { e ->
-                activity.hideProgressDialog()
+                when (activity) {
+                    is MainActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is ProfileActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
                 Log.e(activity.javaClass.simpleName, "Error when updating profile data...", e)
                 Toast.makeText(activity, "Error when updating profile data...", Toast.LENGTH_SHORT).show()
             }
