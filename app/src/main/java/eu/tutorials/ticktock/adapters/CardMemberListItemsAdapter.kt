@@ -11,7 +11,7 @@ import eu.tutorials.ticktock.R
 import eu.tutorials.ticktock.models.SelectedMembers
 import eu.tutorials.ticktock.models.User
 
-open class CardMemberListItemsAdapter(private val context: Context, private var list: ArrayList<SelectedMembers>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+open class CardMemberListItemsAdapter(private val context: Context, private var list: ArrayList<SelectedMembers>, private val assignMembers: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     // class vars
     private var onClickListener: OnClickListener? = null
 
@@ -30,7 +30,7 @@ open class CardMemberListItemsAdapter(private val context: Context, private var 
 
         if (holder is MyViewHolder) {
 
-            if (position == list.size - 1) {
+            if (position == list.size - 1 && assignMembers) {
                 holder.itemView.findViewById<ImageView>(R.id.iv_add_member).visibility = View.VISIBLE
                 holder.itemView.findViewById<ImageView>(R.id.iv_selected_member_image).visibility = View.GONE
             } else {

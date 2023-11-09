@@ -150,7 +150,7 @@ class CardDetailsActivity : BaseActivity() {
             recyclerView.visibility = View.VISIBLE
 
             recyclerView.layoutManager = GridLayoutManager(this, 6)
-            val adapter = CardMemberListItemsAdapter(this, selectedMembersList)
+            val adapter = CardMemberListItemsAdapter(this, selectedMembersList, true)
             recyclerView.adapter = adapter
             adapter.setOnClickListener(object:
                 CardMemberListItemsAdapter.OnClickListener {
@@ -238,11 +238,11 @@ class CardDetailsActivity : BaseActivity() {
         builder.setMessage(resources.getString(R.string.confirm_message_to_delete_card, cardName))
         builder.setIcon(android.R.drawable.ic_dialog_alert)
 
-        builder.setPositiveButton(resources.getString(R.string.yes)) { dialogInterface, which ->
+        builder.setPositiveButton(resources.getString(R.string.yes)) { dialogInterface, _ ->
             dialogInterface.dismiss()
             deleteCard()
         }
-        builder.setNegativeButton(resources.getString(R.string.no)) { dialogInterface, which ->
+        builder.setNegativeButton(resources.getString(R.string.no)) { dialogInterface, _ ->
             dialogInterface.dismiss()
         }
         val alertDialog: AlertDialog = builder.create()
