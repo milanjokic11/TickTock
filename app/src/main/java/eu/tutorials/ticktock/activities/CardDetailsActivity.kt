@@ -10,6 +10,7 @@ import android.widget.Toast
 import eu.tutorials.ticktock.R
 import eu.tutorials.ticktock.databinding.ActivityCardDetailsBinding
 import eu.tutorials.ticktock.dialogs.LabelColorListDialog
+import eu.tutorials.ticktock.dialogs.MembersListDialog
 import eu.tutorials.ticktock.firebase.FireStoreClass
 import eu.tutorials.ticktock.models.Board
 import eu.tutorials.ticktock.models.Card
@@ -44,6 +45,10 @@ class CardDetailsActivity : BaseActivity() {
             labelColorsListDialog()
         }
 
+        binding?.tvSelectMembers?.setOnClickListener {
+            membersListDialog()
+        }
+
         binding?.btnUpdateCardDetails?.setOnClickListener {
             if (binding?.etNameCardDetails?.text.toString().isNotEmpty()) {
                 updateCardDetails()
@@ -70,6 +75,34 @@ class CardDetailsActivity : BaseActivity() {
     private fun setColor() {
         binding?.tvSelectLabelColor?.text = ""
         binding?.tvSelectLabelColor?.setBackgroundColor(Color.parseColor(mSelectedColor))
+    }
+
+    private fun membersListDialog() {
+        var cardAssignedMembersList = mBoardDetails.taskList[mTaskListPos].cards[mCardPos].assignedTo
+
+        if (cardAssignedMembersList.size > 0 ) {
+            for (i in mMembersDetailList.indices) {
+                for (j in cardAssignedMembersList) {
+                    if (mMembersDetailList[i].id == j) {
+                        mMembersDetailList[i].selected = true
+                    }
+                }
+            }
+        } else {
+            for (i in mMembersDetailList.indices) {
+                mMembersDetailList[i].selected = false
+            }
+        }
+        val listDialog = object: MembersListDialog(
+            this,
+            mMembersDetailList,
+            resources.getString(R.string.str_select_member)
+        ) {
+            override fun onItemSelected(user: User, action: String) {
+                // todo later
+            }
+        }
+        listDialog.show()
     }
 
     private fun labelColorsListDialog() {

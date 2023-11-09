@@ -1,5 +1,6 @@
 package eu.tutorials.ticktock.adapters
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +12,11 @@ import com.bumptech.glide.Glide
 import eu.tutorials.ticktock.R
 import eu.tutorials.ticktock.models.Card
 import eu.tutorials.ticktock.models.User
+import eu.tutorials.ticktock.utils.Constants
 
 open class MemberListItemsAdapter (private val context: Context, private val list: ArrayList<User>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     // class vars
+    private var onClickListener: OnClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_member, parent, false))
@@ -33,6 +36,22 @@ open class MemberListItemsAdapter (private val context: Context, private val lis
 
             holder.itemView.findViewById<TextView>(R.id.tv_member_name).text = model.name
             holder.itemView.findViewById<TextView>(R.id.tv_member_email).text= model.email
+
+            if (model.selected) {
+                holder.itemView.findViewById<ImageView>(R.id.iv_selected_member).visibility = View.VISIBLE
+            } else {
+                holder.itemView.findViewById<ImageView>(R.id.iv_selected_member).visibility = View.GONE
+            }
+
+            holder.itemView.setOnClickListener {
+                if (onClickListener != null) {
+                    if (model.selected) {
+                        onClickListener!!.onClick(pos, model, Constants.UN_SELECT)
+                    } else {
+                        onClickListener!!.onClick(pos, model, Constants.SELECT)
+                    }
+                }
+            }
         }
     }
 
@@ -40,5 +59,14 @@ open class MemberListItemsAdapter (private val context: Context, private val lis
         return list.size
     }
 
+    fun setOnClickListener(onClickListener: OnClickListener) {
+        this.onClickListener = onClickListener
+    }
+
     class MyViewHolder(view: View): RecyclerView.ViewHolder(view)
+
+    interface OnClickListener {
+        fun onClick(pos: Int, user: User, action: String)
+    }
+
 }
