@@ -47,8 +47,8 @@
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/et_name_card_details"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_width="488dp"
+                        android:layout_height="48dp"
                         android:hint="@string/hint_card_name"
                         android:inputType="text"
                         android:textSize="@dimen/et_text_size"

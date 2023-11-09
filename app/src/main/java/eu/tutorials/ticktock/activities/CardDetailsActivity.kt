@@ -6,14 +6,20 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import eu.tutorials.ticktock.R
+import eu.tutorials.ticktock.adapters.CardMemberListItemsAdapter
 import eu.tutorials.ticktock.databinding.ActivityCardDetailsBinding
 import eu.tutorials.ticktock.dialogs.LabelColorListDialog
 import eu.tutorials.ticktock.dialogs.MembersListDialog
 import eu.tutorials.ticktock.firebase.FireStoreClass
 import eu.tutorials.ticktock.models.Board
 import eu.tutorials.ticktock.models.Card
+import eu.tutorials.ticktock.models.SelectedMembers
 import eu.tutorials.ticktock.models.Task
 import eu.tutorials.ticktock.models.User
 import eu.tutorials.ticktock.utils.Constants
@@ -44,6 +50,8 @@ class CardDetailsActivity : BaseActivity() {
         binding?.tvSelectLabelColor?.setOnClickListener {
             labelColorsListDialog()
         }
+
+        setUpSelectedMembersList()
 
         binding?.tvSelectMembers?.setOnClickListener {
             membersListDialog()
@@ -99,10 +107,63 @@ class CardDetailsActivity : BaseActivity() {
             resources.getString(R.string.str_select_member)
         ) {
             override fun onItemSelected(user: User, action: String) {
-                // todo later
+                if (action == Constants.SELECT) {
+                    if (mBoardDetails.taskList[mTaskListPos].cards[mCardPos].assignedTo.contains(user.id)) {
+                        mBoardDetails.taskList[mTaskListPos].cards[mCardPos].assignedTo.add(user.id)
+                    }
+                } else {
+                    mBoardDetails.taskList[mTaskListPos].cards[mCardPos].assignedTo.remove(user.id)
+
+                    for (i in mMembersDetailList.indices) {
+                        if (mMembersDetailList[i].id == user.id) {
+                            mMembersDetailList[i].selected = false
+                        }
+                    }
+                }
+                setUpSelectedMembersList()
             }
         }
         listDialog.show()
+    }
+
+    private fun setUpSelectedMembersList() {
+        val cardAssignedMembersList = mBoardDetails.taskList[mTaskListPos].cards[mCardPos].assignedTo
+        val selectedMembersList: ArrayList<SelectedMembers> = ArrayList()
+
+        for (i in mMembersDetailList.indices) {
+            for (j in cardAssignedMembersList) {
+                if (mMembersDetailList[i].id == j) {
+                    val selectedMember = SelectedMembers(
+                        mMembersDetailList[i].id,
+                        mMembersDetailList[i].image
+                    )
+                    selectedMembersList.add(selectedMember)
+                }
+            }
+        }
+
+        if (selectedMembersList.size > 0) {
+            val recyclerView = findViewById<RecyclerView>(R.id.rv_selected_members_list)
+            selectedMembersList.add(SelectedMembers("", ""))
+
+            findViewById<TextView>(R.id.tv_select_members).visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+
+            recyclerView.layoutManager = GridLayoutManager(this, 6)
+            val adapter = CardMemberListItemsAdapter(this, selectedMembersList)
+            recyclerView.adapter = adapter
+            adapter.setOnClickListener(object:
+                CardMemberListItemsAdapter.OnClickListener {
+                    override fun onClick() {
+                        membersListDialog()
+                    }
+                }
+            )
+        } else {
+            val recyclerView = findViewById<RecyclerView>(R.id.rv_selected_members_list)
+            findViewById<TextView>(R.id.tv_select_members).visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+        }
     }
 
     private fun labelColorsListDialog() {
@@ -149,6 +210,9 @@ class CardDetailsActivity : BaseActivity() {
             mBoardDetails.taskList[mTaskListPos].cards[mCardPos].assignedTo,
             mSelectedColor
         )
+        val taskList: ArrayList<Task> = mBoardDetails.taskList
+        taskList.removeAt(taskList.size - 1)
+
         mBoardDetails.taskList[mTaskListPos].cards[mCardPos] = card
 
         showProgressDialog(resources.getString(R.string.please_wait))
