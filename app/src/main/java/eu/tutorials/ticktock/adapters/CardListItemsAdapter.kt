@@ -1,6 +1,7 @@
 package eu.tutorials.ticktock.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,13 @@ open class CardListItemsAdapter (private val context: Context, private var list:
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, pos: Int) {
         val model = list[pos]
         if (holder is MyViewHolder) {
+            if (model.labelColor.isNotEmpty()) {
+                holder.itemView.findViewById<View>(R.id.view_label_color).visibility = View.VISIBLE
+                holder.itemView.findViewById<View>(R.id.view_label_color).setBackgroundColor(Color.parseColor(model.labelColor))
+            } else {
+                holder.itemView.findViewById<View>(R.id.view_label_color).visibility = View.GONE
+            }
+
             holder.itemView.findViewById<TextView>(R.id.tv_card_name).text = model.name
 
             holder.itemView.setOnClickListener{

@@ -9,22 +9,31 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import eu.tutorials.ticktock.R
 
-class LabelColorListItemsAdapter(private val context: Context, private var list: ArrayList<String>, private val mSelectedColor: String): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    // class vars
+class LabelColorListItemsAdapter(
+    private val context: Context,
+    private var list: ArrayList<String>,
+    private val mSelectedColor: String
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
     var onItemClickListener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-       return MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_label_color, parent, false))
-    }
-
-    override fun getItemCount(): Int {
-        return list.size
+        return MyViewHolder(
+            LayoutInflater.from(context).inflate(
+                R.layout.item_label_color,
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, pos: Int) {
         val item = list[pos]
+
         if (holder is MyViewHolder) {
+
             holder.itemView.findViewById<View>(R.id.view_main).setBackgroundColor(Color.parseColor(item))
+
             if (item == mSelectedColor) {
                 holder.itemView.findViewById<ImageView>(R.id.iv_selected_color).visibility = View.VISIBLE
             } else {
@@ -32,6 +41,7 @@ class LabelColorListItemsAdapter(private val context: Context, private var list:
             }
 
             holder.itemView.setOnClickListener {
+
                 if (onItemClickListener != null) {
                     onItemClickListener!!.onClick(pos, item)
                 }
@@ -39,10 +49,13 @@ class LabelColorListItemsAdapter(private val context: Context, private var list:
         }
     }
 
-    private class MyViewHolder(view: View): RecyclerView.ViewHolder(view)
+    override fun getItemCount(): Int {
+        return list.size
+    }
+
+    private class MyViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     interface OnItemClickListener {
         fun onClick(pos: Int, color: String)
     }
-
 }
