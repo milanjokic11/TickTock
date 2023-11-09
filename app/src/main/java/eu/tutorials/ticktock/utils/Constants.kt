@@ -23,6 +23,7 @@ object Constants {
     const val EMAIL: String = "email"
     const val TASK_LIST_ITEM_POS: String = "task_list_item_pos"
     const val CARD_LIST_ITEM_POS: String = "card_list_item_pos"
+    const val BOARD_MEMBERS_LIST: String = "board_members_list"
 
     fun showImageChooser(activity: Activity) {
         var galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)

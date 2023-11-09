@@ -14,6 +14,7 @@ import eu.tutorials.ticktock.firebase.FireStoreClass
 import eu.tutorials.ticktock.models.Board
 import eu.tutorials.ticktock.models.Card
 import eu.tutorials.ticktock.models.Task
+import eu.tutorials.ticktock.models.User
 import eu.tutorials.ticktock.utils.Constants
 
 class CardDetailsActivity : BaseActivity() {
@@ -23,6 +24,7 @@ class CardDetailsActivity : BaseActivity() {
     private var mCardPos = -1
     private var mSelectedColor: String = ""
     private lateinit var mBoardDetails: Board
+    private lateinit var mMembersDetailList: ArrayList<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -161,6 +163,9 @@ class CardDetailsActivity : BaseActivity() {
         }
         if (intent.hasExtra(Constants.CARD_LIST_ITEM_POS)) {
             mCardPos = intent.getIntExtra(Constants.CARD_LIST_ITEM_POS, -1)
+        }
+        if (intent.hasExtra(Constants.BOARD_MEMBERS_LIST)) {
+            mMembersDetailList = intent.getParcelableArrayListExtra(Constants.BOARD_MEMBERS_LIST)!!
         }
     }
 
