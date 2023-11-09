@@ -2,6 +2,7 @@ package eu.tutorials.ticktock.activities
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
@@ -23,6 +24,10 @@ import eu.tutorials.ticktock.models.SelectedMembers
 import eu.tutorials.ticktock.models.Task
 import eu.tutorials.ticktock.models.User
 import eu.tutorials.ticktock.utils.Constants
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class CardDetailsActivity : BaseActivity() {
     // class vars
@@ -30,6 +35,7 @@ class CardDetailsActivity : BaseActivity() {
     private var mTaskListPos = -1
     private var mCardPos = -1
     private var mSelectedColor: String = ""
+    private var mSelectedDueDateMilliseconds: Long = 0
     private lateinit var mBoardDetails: Board
     private lateinit var mMembersDetailList: ArrayList<User>
 
@@ -55,6 +61,16 @@ class CardDetailsActivity : BaseActivity() {
 
         binding?.tvSelectMembers?.setOnClickListener {
             membersListDialog()
+        }
+
+        mSelectedDueDateMilliseconds = mBoardDetails.taskList[mTaskListPos].cards[mCardPos].dueDate
+        if (mSelectedDueDateMilliseconds > 0) {
+            val simpleDateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+            val selectedDate = simpleDateFormat.format(Date(mSelectedDueDateMilliseconds))
+            findViewById<TextView>(R.id.tv_select_due_date).text = selectedDate
+        }
+        binding?.tvSelectDueDate?.setOnClickListener {
+            showDatePicker()
         }
 
         binding?.btnUpdateCardDetails?.setOnClickListener {
@@ -208,7 +224,8 @@ class CardDetailsActivity : BaseActivity() {
             binding?.etNameCardDetails?.text.toString(),
             mBoardDetails.taskList[mTaskListPos].cards[mCardPos].createdBy,
             mBoardDetails.taskList[mTaskListPos].cards[mCardPos].assignedTo,
-            mSelectedColor
+            mSelectedColor,
+            mSelectedDueDateMilliseconds
         )
         val taskList: ArrayList<Task> = mBoardDetails.taskList
         taskList.removeAt(taskList.size - 1)
@@ -278,4 +295,34 @@ class CardDetailsActivity : BaseActivity() {
             }
         }
     }
+
+    private fun showDatePicker() {
+
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+
+        val dpd = DatePickerDialog(
+            this,
+            DatePickerDialog.OnDateSetListener { _, selectedYear, selectedMonthOfYear, selectedDayOfMonth ->
+                val sDayOfMonth = if (selectedDayOfMonth < 10) "0$selectedDayOfMonth" else "$selectedDayOfMonth"
+                val sMonthOfYear = if ((selectedMonthOfYear + 1) < 10) "0${selectedMonthOfYear + 1}" else "${selectedMonthOfYear + 1}"
+
+                val selectedDate = "$sMonthOfYear/$sDayOfMonth/$selectedYear"
+                findViewById<TextView>(R.id.tv_select_due_date).text = selectedDate
+
+                val sdf = SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH)
+
+                val theDate = sdf.parse(selectedDate)
+
+                mSelectedDueDateMilliseconds = theDate!!.time
+            },
+            year,
+            month,
+            day
+        )
+        dpd.show()
+    }
+
 }
