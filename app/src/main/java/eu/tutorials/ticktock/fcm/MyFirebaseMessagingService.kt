@@ -13,6 +13,9 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import eu.tutorials.ticktock.R
 import eu.tutorials.ticktock.activities.MainActivity
+import eu.tutorials.ticktock.activities.SignInActivity
+import eu.tutorials.ticktock.firebase.FireStoreClass
+import eu.tutorials.ticktock.utils.Constants
 
 
 class MyFirebaseMessagingService: FirebaseMessagingService() {
@@ -23,6 +26,9 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
 
         remoteMessage.data.isNotEmpty().let {
             Log.d(TAG, "Message data payload: ${remoteMessage.data}")
+            val title = remoteMessage.data[Constants.FCM_KEY_TITLE]!!
+            val message = remoteMessage.data[Constants.FCM_KEY_MESSAGE]!!
+            sendNotification(title, message)
         }
 
         remoteMessage.notification?.let {
@@ -40,16 +46,24 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         // todo
     }
 
-    private fun sendNotification(messageBody: String) {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    private fun sendNotification(title: String, message: String) {
+        val intent = if (FireStoreClass().getCurrentUserID().isNotEmpty()) {
+            Intent(this, MainActivity::class.java)
+        } else {
+            Intent(this, SignInActivity::class.java)
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK or
+                Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent,
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
         val channelID = this.resources.getString(R.string.default_notif_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelID)
             .setSmallIcon(R.drawable.ic_stat_notification_24dp)
-            .setContentTitle("Title").setContentText("Message")
+            .setContentTitle(title)
+            .setContentText(message)
             .setAutoCancel(true).setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
 
